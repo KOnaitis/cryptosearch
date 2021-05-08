@@ -21,8 +21,6 @@ jobs:
       with:
         python-version: 3.9
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements ]; then pip install -r requirements; fi
+      run: make install
     - name: Run validation
       run: make validate
