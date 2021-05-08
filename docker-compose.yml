@@ -1,0 +1,13 @@
+version: '3.2'
+services:
+   cryptosearch:
+    build: .
+    container_name: cryposearch
+    env_file:
+      - env
+    volumes: # TODO: could be mounted nicer
+      - ./project:/home/cryptosearch/project
+      - ./venv:/home/cryptosearch/venv
+    ports:
+      - 8000:8000
+    entrypoint: bash -c "./manage.py makemigrations && ./manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:8000 project.wsgi:application"
