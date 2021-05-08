@@ -11,3 +11,13 @@ venv:
 install: venv
 	$(VEA); \
 	pip install -r requirements
+
+lint: venv
+	$(VEA); \
+    flake8 project api --statistics --max-line-length=100
+
+test: venv
+	$(VEA); \
+	pytest
+
+validate: lint test;
