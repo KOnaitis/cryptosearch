@@ -14,7 +14,7 @@ install: venv
 
 lint: venv
 	$(VEA); \
-    flake8 project api --statistics --max-line-length=127
+	flake8 project api --statistics --max-line-length=127
 
 test: venv
 	$(VEA); \
@@ -22,7 +22,7 @@ test: venv
 
 migrate: venv
 	$(VEA); \
-    ./manage.py makemigrations; \
+	./manage.py makemigrations; \
 	./manage.py migrate
 
 static: venv
