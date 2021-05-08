@@ -6,7 +6,7 @@ shell:
 	python manage.py shell_plus
 
 venv:
-	test -d $(VENV) || python -m venv -p python3.9 $(VENV)
+	test -d $(VENV) || python3.9 -m venv $(VENV)
 
 install: venv
 	$(VEA); \
