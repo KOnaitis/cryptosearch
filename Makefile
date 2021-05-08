@@ -18,6 +18,18 @@ lint: venv
 
 test: venv
 	$(VEA); \
-	pytest
+	DJANGO_SETTINGS_MODULE=project.settings pytest
+
+migrate: venv
+	$(VEA); \
+    ./manage.py makemigrations; \
+	./manage.py migrate
+
+static: venv
+	$(VEA); \
+	./manage.py collectstatic
+
+
+prepare: static migrate;
 
 validate: lint test;

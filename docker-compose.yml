@@ -11,4 +11,4 @@ services:
       - ./venv:/home/cryptosearch/venv
     ports:
       - 8000:8000
-    entrypoint: bash -c "./manage.py makemigrations && ./manage.py migrate && gunicorn --workers 3 --bind 0.0.0.0:8000 project.wsgi:application"
+    entrypoint: bash -c "make migrate && gunicorn --workers 3 --bind 0.0.0.0:8000 project.wsgi:application"
