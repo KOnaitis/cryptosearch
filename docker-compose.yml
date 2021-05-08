@@ -6,6 +6,7 @@ services:
     env_file:
       - env
     volumes: # TODO: could be mounted nicer
+      - ./api:/home/cryptosearch/api
       - ./project:/home/cryptosearch/project
       - ./venv:/home/cryptosearch/venv
     ports:
