@@ -3,7 +3,7 @@ VEA = . $(VENV)/bin/activate
 
 shell:
 	$(VEA); \
-	python manage.py shell_plus
+	./manage.py shell_plus
 
 venv:
 	test -d $(VENV) || python3.9 -m venv $(VENV)

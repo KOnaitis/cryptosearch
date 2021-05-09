@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 import requests
@@ -91,6 +92,20 @@ class BCHHandler(CryptoHandler):
             params={'limit': size, 'offset': offset})
 
     def transform_transaction(self, tx):
+        for i in tx['inputs']:
+            if 'address' not in i:
+                logging.info('?')
+                raise APIException('address missing')
+            if 'value' not in i:
+                logging.info('??')
+                raise APIException('value missing')
+        for i in tx['outputs']:
+            if 'address' not in i:
+                logging.info('???')
+                raise APIException('address missing')
+            if 'value' not in i:
+                logging.info('????')
+                raise APIException('value missing')
         return {
             'inputs': tx['inputs'],
             'outputs': tx['outputs'],
@@ -98,7 +113,7 @@ class BCHHandler(CryptoHandler):
         }
 
     def transform_transactions(self, data):
-        return list(map(self.transform_transaction, data))
+        return [self.transform_transaction(tx) for tx in data]
 
 
 class BTCHandler(CryptoHandler):
@@ -119,4 +134,4 @@ class BTCHandler(CryptoHandler):
         }
 
     def transform_transactions(self, data):
-        return list(map(self.transform_transaction, data))
+        return [self.transform_transaction(tx) for tx in data]

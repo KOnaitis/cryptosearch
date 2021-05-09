@@ -1,8 +1,24 @@
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
 
 from api.search.blockchain_client.client import BlockchainClient
+from api.search.models import TransactionSearch, AddressSearch
+from api.search.serializers import AddressSearchSerializer, TransactionSearchSerializer
+
+
+class AddressSearchView(ListAPIView):
+    queryset = AddressSearch.objects.all()
+    serializer_class = AddressSearchSerializer
+    pagination_class = PageNumberPagination
+
+
+class TransactionSearchView(ListAPIView):
+    queryset = TransactionSearch.objects.all()
+    serializer_class = TransactionSearchSerializer
+    pagination_class = PageNumberPagination
 
 
 class AddressTransactionsView(APIView):
@@ -24,6 +40,13 @@ class AddressTransactionsView(APIView):
             page=page,
             size=self.page_size
         )
+        AddressSearch.objects.create(
+            crypto=crypto,
+            address=address,
+            page=page,
+            size=self.page_size
+            # TODO: creator=request.user
+        )
         return Response(transactions)
 
 
@@ -34,4 +57,5 @@ class TransactionsView(APIView):
 
         # TODO: might do extra validations on tx id here, but don't know enough about tx ids to do it right now.
 
+        TransactionSearch.objects.create(crypto=crypto, transaction=tx)  # TODO: , creator=request.user)
         return Response(BlockchainClient.transaction(crypto=crypto, tx=tx))
