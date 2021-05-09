@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ParseError, ValidationError
 
-from api.search.blockchain_client.cryptocurrency import CryptoCurrency
+from api.search.crypto_currencies import CryptoCurrency
 from api.search.blockchain_client.handlers import BTCHandler, BCHHandler, ETHHandler
 
 
@@ -20,5 +20,12 @@ class BlockchainClient:
 
         if crypto in BlockchainClient.handlers:
             return BlockchainClient.handlers[crypto].transactions_by_address(address, page, size)
+
+        raise ValidationError(f'Cryptocurrency \'{crypto}\' is not supported')
+
+    @staticmethod
+    def transaction(crypto, tx):
+        if crypto in BlockchainClient.handlers:
+            return BlockchainClient.handlers[crypto].transaction(tx)
 
         raise ValidationError(f'Cryptocurrency \'{crypto}\' is not supported')
