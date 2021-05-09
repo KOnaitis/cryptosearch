@@ -19,5 +19,6 @@ from django.urls import path, include
 from project import settings
 
 urlpatterns = [
-    path(r'auth/', include('api.authentication.urls'))
+  path(r'auth/', include('api.authentication.urls')),
+  path(r'search/', include('api.search.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

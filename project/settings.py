@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import logging
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,9 @@ if key is None:
 SECRET_KEY = 'local' if key is None else key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
+logging.basicConfig(format='[%(asctime)s] [%(levelname)s] [%(name)s:%(lineno)s] [%(module)s] %(message)s',
+                    level='DEBUG' if DEBUG else 'INFO')
 
 hosts = os.getenv('DJANGO_ALLOWED_HOSTS')
 ALLOWED_HOSTS = [] if hosts is None else hosts.split(',')
@@ -118,7 +121,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated', # TODO: add bck
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
