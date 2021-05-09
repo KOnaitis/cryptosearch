@@ -16,7 +16,7 @@ class AddressTransactionsView(APIView):
         crypto = kwargs.get('crypto')
         address = kwargs.get('address')
 
-        # TODO: would do extra validations on address here, but don't know enough about addresses to do it right now.
+        # TODO: might do extra validations on address here, but don't know enough about addresses to do it right now.
 
         transactions = BlockchainClient.transactions_for_address(
             crypto=crypto,
@@ -25,3 +25,13 @@ class AddressTransactionsView(APIView):
             size=self.page_size
         )
         return Response(transactions)
+
+
+class TransactionsView(APIView):
+    def get(self, request, *args, **kwargs):
+        crypto = kwargs.get('crypto')
+        tx = kwargs.get('tx')
+
+        # TODO: might do extra validations on tx id here, but don't know enough about tx ids to do it right now.
+
+        return Response(BlockchainClient.transaction(crypto=crypto, tx=tx))

@@ -18,7 +18,31 @@ class StubResponse:
 
 class TestBlockchainClient(TestCase):
     @patch('requests.get')
-    def test_eth_should_parse_result_into_common_format(self, mock):
+    def test_eth_should_parse_transaction_into_common_format(self, mock):
+        mock.return_value = StubResponse({
+            "hash": "0x8d3eb0836e0c73ee60c3d89d06d830f8c31c19f47c1dc6fbfc9e02e20852352b",
+            "to": "0xd2c7649ab7ededf965e5bcd0d7007ebeaee179c4",
+            "from": "0xaa62dc6cd0123d5bb1e080e61f5fe508b7c8744e",
+            "value": "15000000000000000000",
+            "nonce": "4",
+            "state": "CONFIRMED",
+            "timestamp": "1620562387"
+        })
+        hash = '0x8d3eb0836e0c73ee60c3d89d06d830f8c31c19f47c1dc6fbfc9e02e20852352b'
+        result = BlockchainClient.transaction('eth', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/v2/eth/data/transaction/{hash}')
+        expected = OrderedDict([
+            ('inputs', [OrderedDict([
+                ('address', '0xaa62dc6cd0123d5bb1e080e61f5fe508b7c8744e'),
+                ('value', 15000000000000000000)])]),
+            ('outputs', [OrderedDict([
+                ('address', '0xd2c7649ab7ededf965e5bcd0d7007ebeaee179c4'),
+                ('value', 15000000000000000000)])]),
+            ('timestamp', '2021-05-09T12:13:07Z')])
+        self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_eth_should_parse_address_transactions_into_common_format(self, mock):
         mock.return_value = StubResponse({'transactions': [
             {
                 "hash": "0x8d3eb0836e0c73ee60c3d89d06d830f8c31c19f47c1dc6fbfc9e02e20852352b",
@@ -64,7 +88,39 @@ class TestBlockchainClient(TestCase):
         self.assertDictEqual(result, expected)
 
     @patch('requests.get')
-    def test_bch_should_parse_result_into_common_format(self, mock):
+    def test_bch_should_parse_transaction_into_common_format(self, mock):
+        response = {
+            "txid": "12e5d4e3091e5f3b7a1729398e084fb9971efbaf082983069427fd180d2d50c5",
+            "size": 219,
+            "version": 2,
+            "locktime": 0,
+            "fee": 220,
+            "inputs": [{"value": 195673, "address": "bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y"}],
+            "outputs": [
+                {"address": "bitcoincash:qp0lac2exr64laxzuju02jtt0eeg0usp3s7kjf0s2p", "value": 735},
+                {"address": "bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y", "value": 194718}
+            ],
+            "time": 1620561517
+        }
+        mock.return_value = StubResponse(response)
+        hash = '5aaa2ecc901a6d42fa27eb7ca1535df76ffc75416dd54180c4f9034b9c6d4dc5'
+        result = BlockchainClient.transaction('bch', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/haskoin-store/bch/transaction/{hash}')
+        expected = OrderedDict([
+            ('inputs', [OrderedDict([
+                ('address', 'bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y'),
+                ('value', 195673)])]),
+            ('outputs', [OrderedDict([
+                ('address', 'bitcoincash:qp0lac2exr64laxzuju02jtt0eeg0usp3s7kjf0s2p'),
+                ('value', 735)]),
+                OrderedDict([('address', 'bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y'),
+                             ('value', 194718)])]),
+            ('timestamp', '2021-05-09T11:58:37Z')
+        ])
+        self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_bch_should_parse_address_transactions_into_common_format(self, mock):
         response = [
             {
                 "txid": "12e5d4e3091e5f3b7a1729398e084fb9971efbaf082983069427fd180d2d50c5",
@@ -132,7 +188,7 @@ class TestBlockchainClient(TestCase):
         self.assertDictEqual(result, expected)
 
     @patch('requests.get')
-    def test_btc_should_parse_result_into_common_format(self, mock):
+    def test_btc_should_parse_address_transactions_into_common_format(self, mock):
         response = [{
             "inputs": [
                 {
@@ -171,7 +227,51 @@ class TestBlockchainClient(TestCase):
         self.assertDictEqual(result, expected)
 
     @patch('requests.get')
-    def test_should_return_404_when_downstream_returns_404(self, mock):
+    def test_btc_should_parse_transaction_into_common_format(self, mock):
+        response = {
+            "inputs": [
+                {
+                    "output": 0, "sequence": 4294967295, "value": 135974,
+                    "address": "bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d"
+                },
+                {
+                    "output": 2, "sigscript": "", "value": 84574,
+                    "address": "bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d"
+                }
+            ],
+            "outputs": [
+                {"address": "1LDXE2o8mJDKcgLjLZStZq2nZXMQaUzdrv", "value": 202992}
+            ],
+            "time": 1620513287,
+            "rbf": False
+        }
+        mock.return_value = StubResponse(response)
+        hash = '436b9e8e30592024ce5ea618245fe5eeac3d00cc453af9ca0ecb5611c26f59ef'
+        result = BlockchainClient.transaction('btc', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/haskoin-store/btc/transaction/{hash}')
+        expected = OrderedDict([
+            ('inputs', [OrderedDict([
+                ('address', 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d'),
+                ('value', 135974)]),
+                OrderedDict([
+                    ('address', 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d'),
+                    ('value', 84574)])]),
+            ('outputs', [OrderedDict([
+                ('address', '1LDXE2o8mJDKcgLjLZStZq2nZXMQaUzdrv'),
+                ('value', 202992)])]),
+            ('timestamp', '2021-05-08T22:34:47Z')])
+        self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_transaction_should_return_404_when_downstream_returns_404(self, mock):
+        mock.return_value = StubResponse({}, 404)
+        self.assertRaises(
+            NotFound,
+            BlockchainClient.transaction,
+            'bch', '436b9e8e30592024ce5ea618245fe5eeac3d00cc453af9ca0ecb5611c26f59ef')
+
+    @patch('requests.get')
+    def test_address_transactions_should_return_404_when_downstream_returns_404(self, mock):
         mock.return_value = StubResponse({}, 404)
         self.assertRaises(NotFound,
                           BlockchainClient.transactions_for_address,

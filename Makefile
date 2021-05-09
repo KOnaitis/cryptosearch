@@ -32,4 +32,4 @@ static: venv
 
 prepare: static migrate;
 
-validate: lint test;
+validate: migrate lint test;
