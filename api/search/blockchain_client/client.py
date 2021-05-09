@@ -19,6 +19,6 @@ class BlockchainClient:
             raise ParseError('\'page\' cannot be negative')
 
         if crypto in BlockchainClient.handlers:
-            return BlockchainClient.handlers[crypto].transactions_for_address(address, page, size)
+            return BlockchainClient.handlers[crypto].transactions_by_address(address, page, size)
 
         raise ValidationError(f'Cryptocurrency \'{crypto}\' is not supported')
