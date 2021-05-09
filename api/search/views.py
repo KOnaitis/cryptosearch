@@ -14,11 +14,17 @@ class AddressSearchView(ListAPIView):
     serializer_class = AddressSearchSerializer
     pagination_class = PageNumberPagination
 
+    def filter_queryset(self, queryset):
+        return queryset.filter(creator=self.request.user)
+
 
 class TransactionSearchView(ListAPIView):
     queryset = TransactionSearch.objects.all()
     serializer_class = TransactionSearchSerializer
     pagination_class = PageNumberPagination
+
+    def filter_queryset(self, queryset):
+        return queryset.filter(creator=self.request.user)
 
 
 class AddressTransactionsView(APIView):
@@ -44,8 +50,8 @@ class AddressTransactionsView(APIView):
             crypto=crypto,
             address=address,
             page=page,
-            size=self.page_size
-            # TODO: creator=request.user
+            size=self.page_size,
+            creator=request.user
         )
         return Response(transactions)
 
@@ -57,5 +63,5 @@ class TransactionsView(APIView):
 
         # TODO: might do extra validations on tx id here, but don't know enough about tx ids to do it right now.
 
-        TransactionSearch.objects.create(crypto=crypto, transaction=tx)  # TODO: , creator=request.user)
+        TransactionSearch.objects.create(crypto=crypto, transaction=tx, creator=request.user)
         return Response(BlockchainClient.transaction(crypto=crypto, tx=tx))
