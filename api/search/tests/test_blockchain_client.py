@@ -97,7 +97,7 @@ class TestBlockchainClient(TestCase):
             "fee": 220,
             "inputs": [{"value": 195673, "address": "bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y"}],
             "outputs": [
-                {"address": "bitcoincash:qp0lac2exr64laxzuju02jtt0eeg0usp3s7kjf0s2p", "value": 735},
+                {"address": None, "value": 735},
                 {"address": "bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y", "value": 194718}
             ],
             "time": 1620561517
@@ -111,7 +111,7 @@ class TestBlockchainClient(TestCase):
                 ('address', 'bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y'),
                 ('value', 195673)])]),
             ('outputs', [OrderedDict([
-                ('address', 'bitcoincash:qp0lac2exr64laxzuju02jtt0eeg0usp3s7kjf0s2p'),
+                ('address', None),
                 ('value', 735)]),
                 OrderedDict([('address', 'bitcoincash:qpld9cdua8aa34hl3dm8xrv37y2ps4dwjura8m3h2y'),
                              ('value', 194718)])]),
