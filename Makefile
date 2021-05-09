@@ -18,7 +18,7 @@ lint: venv
 
 test: venv
 	$(VEA); \
-	DJANGO_SETTINGS_MODULE=project.settings pytest
+	DJANGO_SETTINGS_MODULE=project.settings pytest -v
 
 migrate: venv
 	$(VEA); \
