@@ -11,8 +11,6 @@ from api.search.models import AddressSearch, TransactionSearch
 
 
 class TestAddressTransactions(TestCase):
-    client = APIClient()
-
     def setUp(self):
         self.user = get_user_model().objects.create(username='blockchain-client', password='pass')
         self.token, _ = Token.objects.get_or_create(user=self.user)
