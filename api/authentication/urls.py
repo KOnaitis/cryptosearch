@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from .views import RegisterView, LoginView
 
 urlpatterns = [
-    url(r'register/$', RegisterView.as_view(), name='register'),
-    url(r'login/$', LoginView.as_view(), name='login'),
+    re_path(r'register/$', RegisterView.as_view(), name='auth-register'),
+    re_path(r'login/$', LoginView.as_view(), name='auth-login'),
 ]
