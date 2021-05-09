@@ -2,13 +2,15 @@ from collections import OrderedDict
 from unittest.mock import patch
 
 from django.test import TestCase
+from rest_framework.exceptions import NotFound
 
 from api.search.blockchain_client.client import BlockchainClient
 
 
 class StubResponse:
-    def __init__(self, data):
+    def __init__(self, data, status=200):
         self.data = data
+        self.status_code = status
 
     def json(self):
         return self.data
@@ -167,3 +169,10 @@ class TestBlockchainClient(TestCase):
                 ('timestamp', '2021-05-08T22:34:47Z')])])
         ])
         self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_should_return_404_when_downstream_returns_404(self, mock):
+        mock.return_value = StubResponse({}, 404)
+        self.assertRaises(NotFound,
+                          BlockchainClient.transactions_for_address,
+                          'btc', 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d', 2, 20)
