@@ -26,8 +26,10 @@ class TransactionsSerializer(Serializer):
 class AddressSearchSerializer(ModelSerializer):
     class Meta:
         model = AddressSearch
+        fields = '__all__'
 
 
 class TransactionSearchSerializer(ModelSerializer):
     class Meta:
         model = TransactionSearch
+        fields = '__all__'
