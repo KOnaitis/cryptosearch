@@ -1,7 +1,7 @@
 from rest_framework.exceptions import ParseError, ValidationError
 
-from api.search.crypto_currencies import CryptoCurrency
-from api.search.blockchain_client.handlers import BTCHandler, BCHHandler, ETHHandler
+from project.crypto_currencies import CryptoCurrency
+from .handlers import BTCHandler, BCHHandler, ETHHandler
 
 
 class BlockchainClient:
@@ -27,5 +27,12 @@ class BlockchainClient:
     def transaction(crypto, tx):
         if crypto in BlockchainClient.handlers:
             return BlockchainClient.handlers[crypto].transaction(tx)
+
+        raise ValidationError(f'Cryptocurrency \'{crypto}\' is not supported')
+
+    @staticmethod
+    def address_balance(crypto, address):
+        if crypto in BlockchainClient.handlers:
+            return BlockchainClient.handlers[crypto].address_balance(address)
 
         raise ValidationError(f'Cryptocurrency \'{crypto}\' is not supported')

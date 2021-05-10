@@ -48,8 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'api.authentication',
-    'api.search',
-    'api.addresses',
+    'api.crypto',
     'api.personal',
 ]
 

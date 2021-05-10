@@ -5,8 +5,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.status import HTTP_200_OK
 from rest_framework.test import APIClient
 
-from api.search.models import AddressSearch, TransactionSearch
-from api.search.serializers import AddressSearchSerializer, TransactionSearchSerializer
+from ..models import AddressSearch, TransactionSearch
+from ..serializers import AddressSearchSerializer, TransactionSearchSerializer
 
 
 class TestAddressTransactions(TestCase):

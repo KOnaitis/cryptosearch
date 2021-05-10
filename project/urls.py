@@ -20,6 +20,6 @@ from project import settings
 
 urlpatterns = [
   path(r'auth/', include('api.authentication.urls')),
-  path(r'search/', include('api.search.urls')),
+  path(r'crypto/', include('api.crypto.urls')),
   path(r'my/', include('api.personal.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

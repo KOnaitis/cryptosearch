@@ -4,9 +4,9 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 
-from api.search.blockchain_client.client import BlockchainClient
-from api.search.models import TransactionSearch, AddressSearch
-from api.search.serializers import AddressSearchSerializer, TransactionSearchSerializer
+from api.blockchain_client.client import BlockchainClient
+from .models import TransactionSearch, AddressSearch
+from .serializers import AddressSearchSerializer, TransactionSearchSerializer
 
 
 class AddressSearchView(ListAPIView):
