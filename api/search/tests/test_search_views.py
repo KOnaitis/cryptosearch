@@ -34,7 +34,7 @@ class TestAddressTransactions(TestCase):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'btc', 'address': 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d'})
         mock.return_value = {'transactions': []}
-        response = self.client.get(url, {'page': 0}, )
+        response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, HTTP_200_OK)
         mock.assert_called_once_with(
             crypto='btc',

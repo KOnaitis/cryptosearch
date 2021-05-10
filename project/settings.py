@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 
     'api.authentication',
     'api.search',
+    'api.addresses',
+    'api.personal',
 ]
 
 MIDDLEWARE = [

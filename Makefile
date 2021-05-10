@@ -1,7 +1,7 @@
 VENV = venv
 VEA = . $(VENV)/bin/activate
 
-shell:
+shell: migrate
 	$(VEA); \
 	./manage.py shell_plus
 
