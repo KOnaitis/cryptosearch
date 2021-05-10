@@ -1,9 +1,12 @@
+import logging
+
 from rest_framework.generics import DestroyAPIView, ListCreateAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.addresses.models import Address
-from api.addresses.serializers import AddressSerializer
-from api.personal.serializers import MyBalanceSerializer
+from api.blockchain_client.client import BlockchainClient
+from api.crypto.models import Address
+from api.crypto.serializers import AddressSerializer
 
 
 class MyAddressView(ListCreateAPIView):
@@ -32,5 +35,10 @@ class MyAddressDestroyView(DestroyAPIView):
 
 
 class MyBalanceView(APIView):
-    def get(self, queryset):
-        return MyBalanceSerializer().to_representation({'balance': 0})
+    # Should be paginated
+    def get(self, *args, **kwargs):
+        result = []
+        for address in Address.objects.filter(owner=self.request.user):  # Could have this in custom object manager
+            logging.info(f'{address.address} {address.crypto}')
+            result.append(BlockchainClient.address_balance(crypto=address.crypto, address=address.address))
+        return Response(data=result)

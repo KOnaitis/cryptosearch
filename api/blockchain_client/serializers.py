@@ -1,6 +1,5 @@
-from rest_framework.serializers import Serializer, CharField, IntegerField, DateTimeField, ModelSerializer
-
-from api.search.models import AddressSearch, TransactionSearch
+from rest_framework.fields import CharField, IntegerField, DateTimeField
+from rest_framework.serializers import Serializer
 
 
 class TransactionOutputSerializer(Serializer):
@@ -23,13 +22,7 @@ class TransactionsSerializer(Serializer):
     transactions = TransactionSerializer(many=True)
 
 
-class AddressSearchSerializer(ModelSerializer):
-    class Meta:
-        model = AddressSearch
-        fields = '__all__'
-
-
-class TransactionSearchSerializer(ModelSerializer):
-    class Meta:
-        model = TransactionSearch
-        fields = '__all__'
+class AddressWithBalance(Serializer):
+    crypto = CharField()
+    address = CharField()
+    balance = IntegerField()

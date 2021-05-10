@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 from rest_framework.test import APIClient
 
-from api.search.models import AddressSearch, TransactionSearch
+from ..models import AddressSearch, TransactionSearch
 
 
 class TestAddressTransactions(TestCase):
@@ -20,7 +20,7 @@ class TestAddressTransactions(TestCase):
     def tearDown(self):
         self.user.delete()
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transaction')
+    @patch('api.blockchain_client.client.BlockchainClient.transaction')
     def test_transaction_detail_should_allow_btc(self, mock):
         tx = '436b9e8e30592024ce5ea618245fe5eeac3d00cc453af9ca0ecb5611c26f59ef'
         url = reverse('transaction-detail', kwargs={'crypto': 'btc', 'tx': tx})
@@ -29,7 +29,7 @@ class TestAddressTransactions(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         mock.assert_called_once_with(crypto='btc', tx=tx)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transactions_for_address')
+    @patch('api.blockchain_client.client.BlockchainClient.transactions_for_address')
     def test_address_search_should_allow_btc(self, mock):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'btc', 'address': 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d'})
@@ -42,7 +42,7 @@ class TestAddressTransactions(TestCase):
             page=0,
             size=50)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transaction')
+    @patch('api.blockchain_client.client.BlockchainClient.transaction')
     def test_transaction_detail_should_allow_eth(self, mock):
         tx = '0x8d3eb0836e0c73ee60c3d89d06d830f8c31c19f47c1dc6fbfc9e02e20852352b'
         url = reverse('transaction-detail', kwargs={'crypto': 'eth', 'tx': tx})
@@ -51,7 +51,7 @@ class TestAddressTransactions(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         mock.assert_called_once_with(crypto='eth', tx=tx)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transactions_for_address')
+    @patch('api.blockchain_client.client.BlockchainClient.transactions_for_address')
     def test_address_search_should_allow_eth(self, mock):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'eth', 'address': '0xaa62dc6cd0123d5bb1e080e61f5fe508b7c8744e'})
@@ -64,7 +64,7 @@ class TestAddressTransactions(TestCase):
             page=1,
             size=50)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transaction')
+    @patch('api.blockchain_client.client.BlockchainClient.transaction')
     def test_transaction_detail_should_allow_bch(self, mock):
         tx = '5aaa2ecc901a6d42fa27eb7ca1535df76ffc75416dd54180c4f9034b9c6d4dc5'
         url = reverse('transaction-detail', kwargs={'crypto': 'bch', 'tx': tx})
@@ -73,7 +73,7 @@ class TestAddressTransactions(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         mock.assert_called_once_with(crypto='bch', tx=tx)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transactions_for_address')
+    @patch('api.blockchain_client.client.BlockchainClient.transactions_for_address')
     def test_address_search_should_allow_bch(self, mock):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'bch', 'address': 'qqtgm0njzgctkmhc28q6530zvjs0pjedxq4d4r7qfr'})
@@ -86,7 +86,7 @@ class TestAddressTransactions(TestCase):
             page=2,
             size=50)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transactions_for_address')
+    @patch('api.blockchain_client.client.BlockchainClient.transactions_for_address')
     def test_address_search_should_set_page_to_0_by_default(self, mock):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'bch', 'address': 'qqtgm0njzgctkmhc28q6530zvjs0pjedxq4d4r7qfr'})
@@ -99,7 +99,7 @@ class TestAddressTransactions(TestCase):
             page=0,
             size=50)
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transactions_for_address')
+    @patch('api.blockchain_client.client.BlockchainClient.transactions_for_address')
     def test_should_create_address_search_log(self, mock):
         url = reverse('address-transactions',
                       kwargs={'crypto': 'bch', 'address': 'searchlog'})
@@ -109,7 +109,7 @@ class TestAddressTransactions(TestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertTrue(AddressSearch.objects.filter(crypto='bch', address='searchlog', creator=self.user).exists())
 
-    @patch('api.search.blockchain_client.client.BlockchainClient.transaction')
+    @patch('api.blockchain_client.client.BlockchainClient.transaction')
     def test_should_create_transaction_search_log(self, mock):
         url = reverse('transaction-detail', kwargs={'crypto': 'bch', 'tx': 'searchlog'})
         mock.return_value = []

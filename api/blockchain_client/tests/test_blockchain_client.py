@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from rest_framework.exceptions import NotFound
 
-from api.search.blockchain_client.client import BlockchainClient
+from api.blockchain_client.client import BlockchainClient
 
 
 class StubResponse:
@@ -17,6 +17,24 @@ class StubResponse:
 
 
 class TestBlockchainClient(TestCase):
+    @patch('requests.get')
+    def test_eth_should_parse_address_balance_into_common_format(self, mock):
+        mock.return_value = StubResponse({
+          "0xaa62dc6cd0123d5bb1e080e61f5fe508b7c8744e": {
+            "balance": "5838070680000000000",
+            "nonce": 5
+          }
+        })
+        hash = '0xaa62dc6cd0123d5bb1e080e61f5fe508b7c8744e'
+        result = BlockchainClient.address_balance('eth', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/eth/account/{hash}/balance')
+        expected = {
+            'address': hash,
+            'crypto': 'eth',
+            'balance': 5838070680000000000
+        }
+        self.assertDictEqual(result, expected)
+
     @patch('requests.get')
     def test_eth_should_parse_transaction_into_common_format(self, mock):
         mock.return_value = StubResponse({
@@ -85,6 +103,26 @@ class TestBlockchainClient(TestCase):
                         ('value', 1000000000000000000)])]),
                     ('timestamp', '2021-05-09T12:07:54Z')])])
         ])
+        self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_bch_should_parse_address_balance_into_common_format(self, mock):
+        mock.return_value = StubResponse({
+          "address": "bitcoincash:qzh0095g66csxg04ms7zhcrg2tludgt3duksgjndts",
+          "confirmed": 452481,
+          "unconfirmed": 0,
+          "utxo": 4,
+          "txs": 333,
+          "received": 87276583
+        })
+        hash = 'qzh0095g66csxg04ms7zhcrg2tludgt3duksgjndts'
+        result = BlockchainClient.address_balance('bch', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/haskoin-store/bch/address/{hash}/balance')
+        expected = {
+            'address': 'bitcoincash:qzh0095g66csxg04ms7zhcrg2tludgt3duksgjndts',
+            'crypto': 'bch',
+            'balance': 452481
+        }
         self.assertDictEqual(result, expected)
 
     @patch('requests.get')
@@ -188,6 +226,26 @@ class TestBlockchainClient(TestCase):
         self.assertDictEqual(result, expected)
 
     @patch('requests.get')
+    def test_btc_should_parse_address_balance_into_common_format(self, mock):
+        mock.return_value = StubResponse({
+          "address": "bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d",
+          "confirmed": 0,
+          "unconfirmed": 0,
+          "utxo": 0,
+          "txs": 4,
+          "received": 562685
+        })
+        hash = 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d'
+        result = BlockchainClient.address_balance('btc', hash)
+        mock.assert_called_once_with(f'https://api.blockchain.info/haskoin-store/btc/address/{hash}/balance')
+        expected = {
+            'address': 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d',
+            'crypto': 'btc',
+            'balance': 0
+        }
+        self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
     def test_btc_should_parse_address_transactions_into_common_format(self, mock):
         response = [{
             "inputs": [
@@ -261,6 +319,14 @@ class TestBlockchainClient(TestCase):
                 ('value', 202992)])]),
             ('timestamp', '2021-05-08T22:34:47Z')])
         self.assertDictEqual(result, expected)
+
+    @patch('requests.get')
+    def test_address_balance_should_return_404_when_downstream_returns_404(self, mock):
+        mock.return_value = StubResponse({}, 404)
+        self.assertRaises(
+            NotFound,
+            BlockchainClient.address_balance,
+            'btc', 'bc1q8c0wvzxjfeuzr6xhp7xyxjxjh8r0dsc5ph224d')
 
     @patch('requests.get')
     def test_transaction_should_return_404_when_downstream_returns_404(self, mock):
